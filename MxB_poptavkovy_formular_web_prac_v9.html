@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Poptávkový formulář – MxB účto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{font-family:'DM Sans',Arial,Helvetica,sans-serif;color:#4F5A6B;--accent:#b34f4c;--light:#fff;--border:#d7d0d0}
+*{box-sizing:border-box}body{margin:0;background:#f6f6f6}.wrap{max-width:900px;margin:0 auto;padding:28px 16px 50px}
+.form-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;pointer-events:none}
+.field-help{display:inline-flex;position:relative;margin-left:5px;vertical-align:middle}.help-mark{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid var(--accent);border-radius:50%;color:var(--accent);font-size:12px;cursor:help}.help-tooltip{display:none;position:absolute;right:0;top:24px;width:240px;max-width:70vw;padding:10px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 2px 12px #0002;font-size:12px;font-weight:400;line-height:1.5;z-index:10}.field-help:hover .help-tooltip,.field-help:focus-within .help-tooltip{display:block}
+.card{background:#fff;border-radius:14px;padding:28px;margin-bottom:18px;box-shadow:0 2px 12px #0000000d}
+h1{margin:0;color:var(--accent);font-size:28px}.header-brand{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;margin-bottom:24px}.header-logo{display:block;width:140px;max-width:35vw;height:auto;flex:0 0 auto}.brand{font-size:20px;font-weight:800;line-height:1.1;letter-spacing:.04em;color:#6D7380;text-align:right;margin:0;padding-top:11px}
+h2{font-size:16px;margin:0 0 18px}.intro{color:#4F5A6B;line-height:1.5}
+.progress{height:8px;background:#e8e4e4;border-radius:8px;overflow:hidden;margin:18px 0}.bar{height:100%;background:var(--accent);width:25%;transition:.25s}
+.grid{display:grid;grid-template-columns:1fr 1fr;column-gap:14px;row-gap:8px}.field{margin-bottom:0}.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+.required-mark{color:var(--accent);margin-left:4px;font-weight:800}
+.field-error{color:#a52f2c;font-size:13px;font-weight:600;margin:6px 0 0}.field-error:empty{display:none}input[aria-invalid="true"]{border:2px solid var(--accent);background:#f5f1f1}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:13px;background:#fff}
+textarea{min-height:100px;resize:vertical}.req{color:var(--accent)}
+.service-grid,.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border);padding:12px;border-radius:9px;cursor:pointer;font-weight:400;background:#fff}.check:has(input:checked){font-weight:700;background:var(--accent);color:#fff;border-color:var(--accent)}
+.check:hover{border-color:var(--accent)}.check input{position:absolute;opacity:0;pointer-events:none}
+.section{background:var(--light);border-radius:10px;padding:16px;margin:18px 0}
+.hidden{display:none!important}.hint{font-size:12px;color:#4F5A6B;margin-top:5px}
+.nav{display:flex;align-items:center;gap:10px;margin-top:30px}.nav .next:last-child{margin-left:auto}
+button{border:0;border-radius:9px;padding:12px 20px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.next{background:var(--accent);color:white}.back{background:#eee;color:#4F5A6B}.submit{background:#f2c169;color:#4f5a6b}
+.summary{background:var(--light);padding:15px;border-radius:9px;line-height:1.6}
+.package-comparison{margin-top:24px}.package-comparison caption{text-align:left;font-weight:700;padding:0 0 12px}.package-comparison th:not(:first-child),.package-comparison td:not(:first-child){text-align:center}
+.vat-package{margin:0 0 28px;color:#000}.vat-package>h2{text-align:center;color:#000;font-size:26px;line-height:1.3;margin:0 0 28px;font-weight:800}.vat-package-card{max-width:308px;margin:0 auto;padding:24px 24px 32px;border-radius:10px;background:#edf1f3;text-align:center;font-size:16px;line-height:1.4;min-height:380px}.vat-package-card h3{margin:0 0 2px;color:#ac5553;font-size:34px;line-height:1.3;font-weight:800}.vat-package-card .vat-package-price{margin:0 0 26px;color:#ac5553;font-size:22px;font-weight:800}.vat-package-card p{margin:0 0 22px}.vat-package-card p:last-child{margin-bottom:0}.vat-package-note{text-align:right;font-size:14px;font-style:italic;margin:20px 0 0}
+.estimate-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px}.estimate-table{width:100%;border-collapse:collapse;font-size:13px}.estimate-table th,.estimate-table td{padding:12px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}.estimate-table th:first-child,.estimate-table td:first-child{text-align:left;white-space:normal}.estimate-table thead{background:var(--accent);color:#fff}.estimate-table tfoot{font-weight:700;color:var(--accent);font-size:15px}.estimate-table tfoot td{border-bottom:0}.estimate-table tbody{background:#fff}#estimate .estimate-table tfoot{background:#fff;color:#4F5A6B;font-weight:700}#estimate .estimate-table tfoot td{color:#4F5A6B}
+@media(max-width:650px){.grid,.service-grid,.choice-grid{grid-template-columns:1fr}.wrap{padding:15px 10px}.card{padding:20px 16px}h1{font-size:24px}.header-brand{gap:16px}.brand{font-size:15px}}
+#backStep,#skipStep{padding:9px 14px;font-size:13px;margin:0}.nav .back,.nav .next{padding:9px 14px;font-size:13px}#backStep{background:#eee;color:#4F5A6B}.grid .field.rowAligned label{min-height:var(--row-label-height,auto)}
+#estimateNotices .intro{font-size:14px}.step[data-step="6"] .section>h2,.step[data-step="6"] .section>p,.step[data-step="6"] .section>#estimateNotices{margin-left:10px;margin-right:10px}
+
+.comparison-table{table-layout:fixed;min-width:600px}.comparison-table .comparison-service{width:43%}.comparison-table thead th{background:#f1f3f5;color:#4F5A6B;white-space:normal;font-size:13px}.comparison-table tbody th{font-weight:400}.comparison-table td{white-space:normal}.comparison-table th:nth-child(3),.comparison-table td:nth-child(3){background:#f5f1f1;border-left:2px solid var(--accent);border-right:2px solid var(--accent);font-weight:700;color:var(--accent)}.comparison-table thead th:nth-child(3){background:var(--accent);color:#fff}.recommended-variant{display:block;margin-top:6px;font-size:11px;font-weight:600;text-transform:none;letter-spacing:.02em}#estimate .comparison-table tfoot td:nth-child(3){background:var(--accent);color:#fff}.comparison-table tfoot th,.comparison-table tfoot td{border-top:2px solid #d7d0d0}.comparison-table .benefit-heading th{padding:0;background:#f7f8fa}.benefit-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;border-radius:0;padding:13px 10px;background:transparent;color:#4F5A6B;font-size:12px;letter-spacing:.04em}.benefit-toggle::after{content:'+';font-size:20px;line-height:1}.benefit-toggle[aria-expanded="true"]::after{content:'−'}.benefit-toggle:hover{background:#f5f1f1}.benefit-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}.comparison-table .benefit-rows th{font-size:12px}.comparison-table .benefit-rows td{font-size:12px}
+.hourly-disclosure>summary{cursor:pointer;padding:14px 12px;background:#f5f1f1;color:var(--accent);font-weight:700;border-radius:9px}.hourly-disclosure[open]>summary{margin-bottom:12px}.hourly-disclosure>summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.vat-package-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.vat-package-grid .vat-package-card{width:100%;max-width:none;margin:0;padding:22px 12px;font-size:14px;min-height:0}.vat-package-grid .vat-package-price{font-size:18px}.vat-package{margin-top:28px}@media(max-width:800px){.vat-package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.vat-package-grid{grid-template-columns:1fr}}
+#contactDetails>.grid{margin-left:10px;margin-right:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="header-brand">
+      <a href="https://www.mxb.cz/" target="_blank" rel="noopener noreferrer" aria-label="MxB – otevřít web v nové kartě"><img class="header-logo" src="MXB_color_full@2x.png" alt="MxB společně"></a>
+      <div class="brand">PORADENSKÁ SKUPINA MxB</div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <button type="button" class="next" id="backStep" onclick="back()">Krok zpět</button>
+      <div id="stepLabel" class="hint"></div>
+      <button type="button" class="next" id="skipStep" onclick="skipStep()">Přeskočit tento krok</button>
+    </div>
+  </div>
+
+  <form id="form" class="card">
+    <div class="form-trap" aria-hidden="true" inert>
+      <label for="websiteField">Website</label>
+      <input id="websiteField" name="website" type="text" tabindex="-1" autocomplete="off" data-antispam>
+    </div>
+    <!-- STEP 2 -->
+    <section class="step hidden" data-step="2">
+      
+      <h2>Jaké služby poptáváte</h2>
+
+      <div class="service-grid">
+          <label class="check"><input type="checkbox" name="Vedení účetnictví" data-service="ucto">Vedení účetnictví</label>
+          <label class="check"><input type="checkbox" name="Mzdové účetnictví" data-service="mzdy">Mzdové účetnictví</label>
+          <label class="check"><input type="checkbox" name="Daňové poradenství" data-service="dan">Daňové poradenství</label>
+          <label class="check"><input type="checkbox" name="Zpracování daňového přiznání" data-service="dap">Zpracování daňového přiznání</label>
+          <label class="check"><input type="checkbox" name="Finanční audit" data-service="audit">Finanční audit</label>
+          <label class="check"><input type="checkbox" name="Ekonomické poradenství" data-service="eko">Ekonomické poradenství</label>
+          <label class="check"><input type="checkbox" name="Právní poradenství, služby advokáta" data-service="prav">Právní poradenství, služby advokáta</label>
+          <label class="check"><input type="checkbox" name="Zpracování Intrastat" data-service="intra">Zpracování Intrastat</label>
+          <label class="check"><input type="checkbox" name="Rekonstrukce účetnictví" data-service="rekonstrukce">Rekonstrukce účetnictví</label>
+          <label class="check"><input type="checkbox" name="Rekonstrukce mzdového účetnictví" data-service="rekonstrukceMzdy">Rekonstrukce mzdového účetnictví</label>
+      </div>
+      <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="next" onclick="clearCurrentStep()">Vymazat</button><button type="button" class="next" onclick="next()">Pokračovat</button></div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step hidden" data-step="3">
+      <h2>Základní údaje z účetnictví</h2>
+
+      <div id="accounting" class="conditional">
+        <div class="section">
+          
+          <div class="grid">
+            <div class="field"><label for="businessActivity">Hlavní předmět podnikatelské činnosti</label><select id="businessActivity" name="Hlavní předmět podnikatelské činnosti"><option value="">Vyberte</option><option value="zbozi">Nákup a prodej zboží</option><option value="sluzby">Poskytování služeb</option></select></div>
+            <div class="field"><label for="turnoverBand">Obrat za poslední zdaňovací období</label><select id="turnoverBand" name="Obrat za poslední zdaňovací období"><option value="">Vyberte</option></select></div>
+            <div class="field"><label>Počet přijatých faktur vč. zálohových (za měsíc)</label><input name="Počet přijatých faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
+            <div class="field"><label>Počet vydaných faktur vč. zálohových (za měsíc)</label><input name="Počet vydaných faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
+            <div class="field"><label>Počet pokladních dokladů (za měsíc)</label><input name="Počet pokladních dokladů (za měsíc)" inputmode="numeric"></div>
+            <div class="field"><label for="cardPayments">Počet plateb kartou / ostatní závazky (za měsíc) <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Příklady ostatních závazků" aria-describedby="cardPaymentsHelp">?</span><span id="cardPaymentsHelp" class="help-tooltip" role="tooltip">Např. Splátkové a platební kalendáře, leasingy, nájemné apod.</span></span></label><input id="cardPayments" name="Počet plateb kartou / ostatní závazky (za měsíc)" inputmode="numeric" aria-describedby="cardPaymentsHelp"></div>
+            <div class="field"><label for="bankItems">Počet položek na bance (za měsíc) <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Vysvětlení počtu položek na bance" aria-describedby="bankItemsHelp">?</span><span id="bankItemsHelp" class="help-tooltip" role="tooltip">Počet všech položek (příjmy i výdaje) na všech bankovních účtech</span></span></label><input id="bankItems" name="Počet položek na bance (za měsíc)" type="number" min="0" step="1" inputmode="numeric"></div>
+            <div class="field"><label>Plátce DPH</label>
+              <select name="Plátce DPH">
+                <option value="">Vyberte</option>
+                <option value="Ano">Ano</option>
+                <option value="Ne">Ne</option>
+              </select>
+            </div>
+
+            <div class="field"><label for="inventoryMethod">Skladová evidence / účtování zásob <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Vysvětlení způsobů účtování zásob" aria-describedby="inventoryHelp">?</span><span id="inventoryHelp" class="help-tooltip" role="tooltip">Způsob A: zásoby se průběžně účtují na sklad a do nákladů se dostávají až při jejich spotřebě nebo prodeji;<br><br>Způsob B: nákupy zásob se průběžně účtují do nákladů a stav skladu se zohlední až na konci účetního období.</span></span></label>
+              <select id="inventoryMethod" name="Skladová evidence / účtování zásob" aria-describedby="inventoryHelp">
+                <option value="">Vyberte</option>
+                <option value="Způsob A">Způsob A</option>
+                <option value="Způsob B">Způsob B</option>
+              </select>
+            </div>
+            <div class="field"><label>Účtujete na střediska / zakázky?</label>
+              <select name="Účtujete na střediska / zakázky?">
+                <option value="">Vyberte</option>
+                <option value="Ano">Ano</option>
+                <option value="Ne">Ne</option>
+              </select>
+            </div>
+            <div class="field"><label>Sledujete detailní analytiku?</label>
+              <select name="Sledujete detailní analytiku?">
+                <option value="">Vyberte</option>
+                <option value="Ano">Ano</option>
+                <option value="Ne">Ne</option>
+              </select>
+            </div>
+            
+            
+<div class="field"><label>Používaný účetní SW</label><input name="Používaný účetní SW"></div>
+          </div>
+        </div>
+      </div>
+
+      
+
+      
+
+      <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="next" onclick="clearCurrentStep()">Vymazat</button><button type="button" class="next" onclick="next()">Pokračovat</button></div>
+    </section>
+    <section class="step hidden" data-step="4">
+      <h2>Základní údaje ze mzdového účetnictví</h2>
+
+      <div id="payroll" class="section">
+        <div class="grid">
+          <div class="field"><label>Počet zaměstnanců HPP</label><input name="Počet zaměstnanců HPP" inputmode="numeric"></div>
+          <div class="field"><label>Počet zaměstnanců DPP / DPČ</label><input name="Počet zaměstnanců DPP / DPČ" inputmode="numeric"></div>
+        </div>
+      </div>
+      <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="next" onclick="clearCurrentStep()">Vymazat</button><button type="button" class="next" onclick="next()">Pokračovat</button></div>
+    </section>
+
+    <section class="step hidden" data-step="5">
+      <h2>Další požadované služby</h2>
+      <div class="section">
+        <div class="grid">
+          <div class="field"><label for="powerOfAttorney">Generální plná moc pro zastupování před FÚ</label><select id="powerOfAttorney" name="Generální plná moc pro zastupování před FÚ"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
+          <div class="field"><label for="dataMailbox">Obsluha datových schránek</label><select id="dataMailbox" name="Obsluha datových schránek"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
+          <div class="field"><label for="reporting">Reporting</label><select id="reporting" name="Zpracování reportů"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
+        </div>
+      </div>
+      <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="next" onclick="clearCurrentStep()">Vymazat</button><button type="button" class="next" onclick="next()">Pokračovat</button></div>
+    </section>
+
+    <!-- Kontaktní údaje a kalkulace -->
+    <section class="step hidden" data-step="6">
+
+        <div id="contactDetails" class="section">
+            <h2>Kontaktní údaje</h2>
+            <div class="grid">
+                <div class="field"><label for="contactPerson">Kontaktní osoba</label><input id="contactPerson" name="Kontaktní osoba" autocomplete="name"></div>
+                <div class="field"><label for="icoField">IČO</label><input id="icoField" name="IČO" inputmode="numeric"></div>
+                <div class="field"><label for="contactEmail">E-mail</label><input id="contactEmail" name="E-mail" type="email" autocomplete="email" required aria-describedby="contactEmailError"><p id="contactEmailError" class="field-error" role="alert"></p></div>
+                <div class="field"><label for="contactPhone">Telefon</label><input id="contactPhone" name="Telefon" type="tel" autocomplete="tel"></div>
+            </div>
+        </div>
+        <div class="summary hidden" id="summary" aria-hidden="true"></div>
+        <div id="estimate" class="section hidden" aria-live="polite">
+            <h2>Odhadovaná cena za měsíc</h2>
+            <div id="packageComparison" class="estimate-table-wrap package-comparison hidden">
+                <table class="estimate-table comparison-table">
+
+                    <colgroup><col class="comparison-service"><col><col><col></colgroup>
+                    <thead><tr><th scope="col">Služba</th><th scope="col">ZÁKLADNÍ</th><th scope="col">POKROČILÝ</th><th scope="col">KOMPLETNÍ</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row">Měsíční odměna za zpracování účetnictví</th><td id="accountingZaklad"></td><td id="accountingProfi"></td><td id="accountingKomplet"></td></tr>
+                        <tr><th scope="row">Zpracování mzdového účetnictví</th><td id="payrollZaklad"></td><td id="payrollProfi"></td><td id="payrollKomplet"></td></tr>
+                    </tbody>
+                    <tbody class="benefit-heading"><tr><th colspan="4"><button type="button" class="benefit-toggle" aria-expanded="false" aria-controls="benefits0" onclick="toggleBenefits(this)">Obsah služby</button></th></tr></tbody>
+                    <tbody id="benefits0" class="benefit-rows hidden">
+                        <tr><th scope="row">Účtování na střediska / zakázky</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Clo a přepravní doklady</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Nedokončená výroba</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Skladové účetnictví typu A</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Nastavení odpisových plánů</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Evidence a kontrola objednávek</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Příprava platebních příkazů</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Správa bankovních importů / napojení ERP</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Export plateb do banky</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Příkazy k úhradě daní</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Silniční daň</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">ČSÚ hlášení</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">EU DPH agenda</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Telefonická podpora</th><td aria-label="Nezahrnuto">—</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Garantovaná reakční doba</th><td>do 48 hodin</td><td>do 24 hodin</td><td>do 24 hodin</td></tr>
+                        <tr><th scope="row">Pravidelná online schůzka</th><td>pololetně</td><td>kvartálně</td><td>měsíčně</td></tr>
+                        <tr><th scope="row">Správa datové schránky</th><td>500 Kč</td><td>500 Kč</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Generální plná moc pro MxB</th><td>750 Kč</td><td>750 Kč</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Vystavování faktur za klienta</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Komunikace s dodavateli / odběrateli</th><td aria-label="Nezahrnuto">-</td><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td></tr>
+                        <tr><th scope="row">Standardní podklady pro audit</th><td aria-label="Nezahrnuto">-</td><td aria-label="Zahrnuto">✓</td><td aria-label="Zahrnuto">✓</td></tr>
+                    </tbody>
+                  
+                    <tfoot><tr><th scope="row">Celková cena za měsíc</th><td id="totalZaklad"></td><td id="totalProfi"></td><td id="totalKomplet"></td></tr></tfoot>
+                </table>
+            </div>
+
+            <p class="hint">Jedná se o nezávaznou kalkulaci na základě Vámi zadaných hodnot. Uvedené částky jsou bez DPH.</p>
+            <p id="estimateStatus" class="hint" role="status"></p>
+            <div id="estimateNotices"></div>
+        </div>
+        <div id="hourlyRates" class="section hidden" aria-live="polite"></div>
+        <div id="vatPackage" class="vat-package hidden" aria-live="polite">
+            <h2>Balíčky pro právnické a fyzické osoby – plátce DPH</h2>
+            <div id="vatPackageCards" class="vat-package-grid"></div>
+            <p class="vat-package-note">*Ceny jsou uvedeny bez DPH.</p>
+        </div>
+        <div class="section">
+            <h2>Specifika a požadavky na spolupráci</h2>
+            <textarea name="Specifika a požadavky na spolupráci"></textarea>
+        </div>
+
+        <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="submit" onclick="submitDemo()">Odeslat poptávku</button></div>
+        <p id="result" class="hint"></p>
+    </section>
+  </form>
+</div>
+
+<script src="cenik.js"></script>
+<script>
+let step=2;
+const form=document.getElementById('form');
+
+function updateAccountingRequirements(){
+  const optional=new Set(['Hlavní předmět podnikatelské činnosti','Obrat za poslední zdaňovací období','Používaný účetní SW','Skladová evidence / účtování zásob','Účtujete na střediska / zakázky?','Sledujete detailní analytiku?']);
+  document.querySelectorAll('.step[data-step="3"] input, .step[data-step="3"] select, .step[data-step="4"] input, .step[data-step="4"] select').forEach(field=>{
+    field.required=!optional.has(field.name);
+  });
+  updateRequiredMarkers();
+}
+function updateRequiredMarkers(){
+  document.querySelectorAll('.field').forEach(field=>{
+    const label=field.querySelector('label');
+    const control=field.querySelector('input,select,textarea');
+    if(!label || !control) return;
+    label.querySelector('.required-mark')?.remove();
+    if(control.required){
+      const mark=document.createElement('span');
+      mark.className='required-mark';
+      mark.textContent='*';
+      mark.setAttribute('aria-hidden','true');
+      label.appendChild(mark);
+    }
+  });
+}
+
+function selected(){
+  return [...document.querySelectorAll('[data-service]:checked')].map(x=>x.dataset.service);
+}
+function has(s){return selected().includes(s)}
+function turnoverBands(){
+  const category=document.getElementById('businessActivity').value || 'nezvoleno';
+  return window.MXB_CENIK?.obratovaPasma?.[category];
+}
+function updateTurnoverOptions(){
+  const select=document.getElementById('turnoverBand');
+  const category=document.getElementById('businessActivity').value || 'nezvoleno';
+  if(select.dataset.category===category) return;
+  select.replaceChildren(new Option('Vyberte',''));
+  const bands=turnoverBands();
+  if(Array.isArray(bands)) bands.forEach(band=>{
+    if(typeof band?.popis==='string') select.add(new Option(band.popis,band.popis));
+  });
+  select.dataset.category=category;
+}
+document.getElementById('businessActivity').addEventListener('change',updateDynamic);
+function updateDynamic(){
+  document.querySelectorAll('.step[data-step="5"] select').forEach(field=>{
+    field.disabled=!(has('ucto') || has('mzdy'));
+  });
+  updateTurnoverOptions();
+  updateAccountingRequirements();
+  alignGridLabels();
+}
+document.querySelectorAll('[data-service]').forEach(x=>x.addEventListener('change',updateDynamic));
+document.querySelectorAll('select[name="Plátce DPH"]').forEach(x=>x.addEventListener('change',updateDynamic));
+
+function alignGridLabels(){
+  document.querySelectorAll('.grid').forEach(grid=>{
+    const fields=[...grid.querySelectorAll(':scope > .field')];
+    fields.forEach(field=>{
+      field.classList.add('rowAligned');
+      field.style.removeProperty('--row-label-height');
+    });
+    if(window.matchMedia('(max-width:650px)').matches) return;
+
+    // Zarovnání podle skutečných řádků CSS gridu, nikoli podle pořadí polí.
+    // Tím zůstanou všechna dvě vedle sebe umístěná bílá pole v jedné rovině,
+    // i když se některé podmíněné pole skryje nebo se popisek zalomí.
+    const rows=[];
+    fields.filter(field=>!field.classList.contains('hidden') && field.getClientRects().length).forEach(field=>{
+      const top=Math.round(field.getBoundingClientRect().top);
+      let row=rows.find(r=>Math.abs(r.top-top)<=1);
+      if(!row){ row={top,fields:[]}; rows.push(row); }
+      row.fields.push(field);
+    });
+
+    rows.forEach(row=>{
+      const max=Math.max(...row.fields.map(field=>{
+        const label=field.querySelector('label');
+        return label ? label.getBoundingClientRect().height : 0;
+      }));
+      row.fields.forEach(field=>field.style.setProperty('--row-label-height',max+'px'));
+    });
+  });
+}
+window.addEventListener('resize',alignGridLabels);
+
+function activeSteps(){
+  if(selected().length===0) return [2,3,4,6];
+  const reconstruction=has('rekonstrukce');
+  const accounting=has('ucto') || reconstruction;
+  const payroll=has('mzdy') || reconstruction || has('rekonstrukceMzdy');
+  return [2,...(accounting?[3]:[]),...(payroll?[4]:[]),...(has('ucto') || has('mzdy') ? [5] : []),6];
+}
+function moveStep(direction){
+  const steps=activeSteps();
+  const target=steps[steps.indexOf(step)+direction];
+  if(target!==undefined){ step=target; render(); }
+}
+function render(){
+  const steps=activeSteps();
+  const position=steps.indexOf(step)+1;
+  const displayedPosition=position;
+  const displayedTotal=steps.length;
+  document.querySelectorAll('.step').forEach(x=>x.classList.toggle('hidden',+x.dataset.step!==step));
+  document.getElementById('bar').style.width=(displayedPosition/displayedTotal*100)+'%';
+  document.getElementById('stepLabel').textContent=`Krok ${displayedPosition} ze ${displayedTotal}`;
+  document.getElementById('backStep').classList.toggle('hidden',position<=1);
+  document.getElementById('skipStep').classList.toggle('hidden',position>=steps.length);
+  updateDynamic();
+  if(step===6){ buildSummary(); calculateEstimate(); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function clearCurrentStep(){
+  const current=document.querySelector(`.step[data-step="${step}"]`);
+  if(!current) return;
+  current.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(el.type==='checkbox' || el.type==='radio') el.checked=false;
+    else el.value='';
+  });
+  updateDynamic();
+  alignGridLabels();
+}
+
+function skipStep(){
+  moveStep(1);
+}
+
+function next(){
+  if(step===2 && selected().length===0){alert('Vyberte prosím alespoň jednu službu.');return}
+  if(step===3 || step===4){
+    const currentStep=document.querySelector(`.step[data-step="${step}"]`);
+    const invalid=[...currentStep.querySelectorAll('input,select,textarea')].find(field=>!field.checkValidity());
+    if(invalid){
+      invalid.focus();
+      alert(invalid.validity.valueMissing ? `Pole „${invalid.closest('.field')?.querySelector('label')?.textContent?.trim() || invalid.name}“ je povinné.` : `Pole „${invalid.closest('.field')?.querySelector('label')?.textContent?.trim() || invalid.name}“ obsahuje neplatnou hodnotu.`);
+      return;
+    }
+  }
+  moveStep(1);
+}
+function back(){moveStep(-1)}
+function buildSummary(){
+  let out='';
+  const services=[...form.querySelectorAll('input[type="checkbox"][data-service]:checked')].map(el=>{
+    const label=el.closest('label')?.textContent?.trim() || el.name || '';
+    return label;
+  }).filter(Boolean);
+
+  if(services.length){
+    out+=`<b>Poptávané služby:</b> ${services.join(', ')}<br><br>`;
+  }
+
+  form.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(el.disabled || el.hasAttribute('data-antispam')) return;
+    if(el.type==='checkbox' || el.type==='radio'){
+      if(el.checked && el.dataset.service) return;
+      if(!el.checked) return;
+    }
+
+    let value='';
+    if(el.type==='checkbox' || el.type==='radio'){
+      value=el.value || 'Ano';
+    }else if(el.tagName==='SELECT'){
+      value=el.value ? (el.options[el.selectedIndex]?.text || el.value) : '';
+    }else{
+      value=el.value;
+    }
+    if(!value) return;
+    const field=el.closest('.field');
+    const labelElement=field?.querySelector('label')?.cloneNode(true);
+    labelElement?.querySelectorAll('.field-help').forEach(help=>help.remove());
+    const label=labelElement?.textContent?.trim() || el.name || '';
+    if(!label) return;
+    out+=`<b>${label}:</b> ${value}<br>`;
+  });
+  document.getElementById('summary').innerHTML=out || 'Nebyla vyplněna žádná hodnota.';
+}
+function buildHourlyRates(){
+  const container=document.getElementById('hourlyRates');
+  const wasOpen=container.querySelector('details')?.open || false;
+  container.replaceChildren();
+  const monthly=has('ucto') || has('mzdy');
+  if(!monthly) document.getElementById('estimate').classList.add('hidden');
+  const hourlyServices=[
+    ['dan','Daňové poradenství'],['dap','Zpracování daňového přiznání'],['audit','Finanční audit'],
+    ['eko','Ekonomické poradenství'],['prav','Právní poradenství'],['intra','Zpracování Intrastat'],
+    ['rekonstrukce','Rekonstrukce účetnictví'],['rekonstrukceMzdy','Rekonstrukce mzdového účetnictví']
+  ];
+  const selectedHourlyServices=hourlyServices.filter(([key])=>has(key)).map(([,label])=>label);
+  const selectedHourlyCount=selectedHourlyServices.length;
+  let intro=null;
+  if(selectedHourlyCount){
+    intro=document.createElement('p');
+    intro.className='intro';
+    const prefix=selectedHourlyCount===1 ? 'Vámi vybraná služba ' : 'Vámi vybrané služby ';
+    const suffix=selectedHourlyCount===1
+      ? ' je účtována v hodinové sazbě a její výsledná cena se odvíjí od její obsahové a časové náročnosti.'
+      : ' jsou účtovány v hodinové sazbě a jejich výsledná cena se odvíjí od jejich obsahové a časové náročnosti.';
+    intro.append(document.createTextNode(prefix));
+    const serviceNames=document.createElement('strong');
+    serviceNames.textContent=selectedHourlyServices.join(', ');
+    intro.append(serviceNames,document.createTextNode(suffix));
+  }
+  if(intro) container.appendChild(intro);
+  const services=[
+    ['dan','Daňové poradenství','danovePoradenstviHodina'],
+    ['senior','Senior účetní','seniorUcetniHodina'],
+    ['audit','Finanční audit','financniAuditHodina'],
+    ['eko','Ekonomické poradenství','ekonomickePoradenstviHodina'],
+    ['prav','Právní poradenství','pravniPoradenstviHodina'],
+    ['prav','Služby advokáta','sluzbyAdvokataHodina'],
+    ['rekonstrukce','Rekonstrukce účetnictví','rekonstrukceUcetnictviHodina'],
+    ['it','IT podpora','itPodporaHodina']
+  ];
+  container.classList.toggle('hidden',!services.length);
+  if(!services.length) return;
+  const prices=window.MXB_CENIK;
+  const valid=value=>typeof value==='number' && Number.isFinite(value) && value>=0;
+  if(!prices || services.some(([, ,key])=>!valid(prices[key])) || (has('dap') && !valid(prices.danovePoradenstviHodina)) || (has('intra') && !valid(prices.seniorUcetniHodina))){
+    container.textContent='Hodinové sazby se nepodařilo načíst. Zkontrolujte soubor cenik.js.';
+    return;
+  }
+  const money=new Intl.NumberFormat('cs-CZ',{style:'currency',currency:'CZK',minimumFractionDigits:0,maximumFractionDigits:0});
+  const disclosure=document.createElement('details');
+  disclosure.className='hourly-disclosure';
+  disclosure.open=wasOpen;
+  const summary=document.createElement('summary');
+  summary.textContent='Ceník našich služeb';
+  disclosure.appendChild(summary);
+  const wrap=document.createElement('div');
+  wrap.className='estimate-table-wrap';
+  const table=document.createElement('table');
+  table.className='estimate-table';
+  const thead=document.createElement('thead');
+  const headerRow=document.createElement('tr');
+  ['Služba', 'Hodinová sazba'].forEach(label=>{
+    const cell=document.createElement('th');
+    cell.scope='col';
+    cell.textContent=label;
+    headerRow.appendChild(cell);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  services.forEach(([,label,key])=>{
+    const row=document.createElement('tr');
+    [label,money.format(prices[key])].forEach(value=>{
+      const cell=document.createElement('td');
+      cell.textContent=value;
+      row.appendChild(cell);
+    });
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  disclosure.appendChild(wrap);
+  const note=document.createElement('p');
+  note.className='hint';
+  note.textContent='Uvedené sazby jsou bez DPH.';
+  disclosure.appendChild(note);
+  container.appendChild(disclosure);
+}
+
+function showVatPackages(){
+  const container=document.getElementById('vatPackage');
+  const packages=[
+    {name:'XS',documents:10,employees:0,price:'1.500',details:'<p>Zpracování <strong>DPH, KH, SH</strong></p><p>Zpracování <strong>DPFO / DPPO</strong><br>elektronicky do 2.5. následujícího roku</p>'},
+    {name:'S',documents:25,employees:1,price:'3.000',details:'<p>Zpracování mezd<br>do <strong>1 zaměstnance</strong></p><p>Zpracování <strong>DPH, KH, SH</strong></p><p>Zpracování <strong>DPFO / DPPO</strong><br>elektronicky do 2.5. následujícího roku</p>'},
+    {name:'M',documents:50,employees:5,price:'6.000',details:'<p>Zpracování mzdového účetnictví<br>do <strong>5 zaměstnanců</strong></p><p>Zpracování <strong>DPH, KH, SH</strong></p><p>Zpracování <strong>DPFO / DPPO</strong></p><p>Čtvrtletní výstupy z účetnictví</p>'},
+    {name:'L',documents:100,employees:10,price:'10.000',details:'<p>Zpracování mzdového účetnictví<br>do <strong>10 zaměstnanců</strong></p><p>Zpracování DPH, KH, SH</p><p>Zpracování DPFO / DPPO</p><p>Měsíční výstupy z účetnictví</p>'}
+  ];
+  document.getElementById('vatPackageCards').innerHTML=packages.map(packageInfo=>`<div class="vat-package-card"><h3>${packageInfo.name}</h3><p class="vat-package-price">${packageInfo.price} Kč / měsíc*</p><p>Zpracování účetních dokladů<br>do <strong>${packageInfo.documents} ks</strong></p>${packageInfo.details}</div>`).join('');
+  container.classList.remove('hidden');
+}
+
+function toggleBenefits(button){
+  const expanded=button.getAttribute('aria-expanded')==='true';
+  button.setAttribute('aria-expanded',String(!expanded));
+  document.getElementById(button.getAttribute('aria-controls')).classList.toggle('hidden',expanded);
+}
+
+function calculateEstimate(){
+  document.getElementById('vatPackage').classList.add('hidden');
+  document.getElementById('packageComparison').classList.add('hidden');
+  buildHourlyRates();
+  if(!has('ucto') && !has('mzdy')) return;
+  const prices=window.MXB_CENIK;
+  const estimate=document.getElementById('estimate');
+  const status=document.getElementById('estimateStatus');
+  estimate.classList.remove('hidden');
+  estimate.dataset.valid='false';
+  status.textContent='';
+  const priceKeys=['polozkyNaBance','priplatekPlatceDph','koeficientSkladovaEvidence','koeficientStrediskaZakazky','koeficientDetailniAnalytika','generalniPlnaMocFu','obsluhaDatovychSchranek'];
+  if(!prices || priceKeys.some(key=>typeof prices[key]!=='number' || !Number.isFinite(prices[key]) || prices[key]<0) || !Array.isArray(prices.mzdovaPasma) || !prices.mzdovaPasma.length || prices.mzdovaPasma.some((tier,index)=>!tier || !Number.isSafeInteger(tier.doPoctu) || tier.doPoctu<1 || (index>0 && tier.doPoctu<=prices.mzdovaPasma[index-1].doPoctu) || typeof tier.cenaZaZamestnance!=='number' || !Number.isFinite(tier.cenaZaZamestnance) || tier.cenaZaZamestnance<0)){
+    status.textContent='Ceník se nepodařilo načíst nebo obsahuje neplatné sazby. Zkontrolujte soubor cenik.js.';
+    return;
+  }
+  if(typeof prices.dppoPocetMesicu!=='number' || !Number.isFinite(prices.dppoPocetMesicu) || prices.dppoPocetMesicu<=0 || typeof prices.dppoNasobek!=='number' || !Number.isFinite(prices.dppoNasobek) || prices.dppoNasobek<0){
+    status.textContent='Parametry DPPO v souboru cenik.js nejsou platné.';
+    return;
+  }
+  if(!Array.isArray(prices.dokladovaPasma) || !prices.dokladovaPasma.length || prices.dokladovaPasma.some((tier,index)=>!tier || !Number.isSafeInteger(tier.doPoctu) || tier.doPoctu<1 || (index>0 && tier.doPoctu<=prices.dokladovaPasma[index-1].doPoctu) || ['zaklad','profi','komplet'].some(key=>typeof tier[key]!=='number' || !Number.isFinite(tier[key]) || tier[key]<0))){
+    status.textContent='Dokladová pásma v souboru cenik.js nejsou platná.';
+    return;
+  }
+  const inventoryCoefficient=form.elements.namedItem('Skladová evidence / účtování zásob').value==='Způsob A' ? prices.koeficientSkladovaEvidence : 1;
+  const bands=turnoverBands();
+  if(!Array.isArray(bands) || !bands.length || bands.some(band=>!band || typeof band.popis!=='string' || typeof band.koeficient!=='number' || !Number.isFinite(band.koeficient) || band.koeficient<=0)){
+    status.textContent='Obratová pásma v souboru cenik.js nejsou platná.';
+    return;
+  }
+  const selectedBand=document.getElementById('turnoverBand').value;
+  const band=bands.find(entry=>entry.popis===selectedBand);
+  if(selectedBand && !band){
+    status.textContent='Vyberte prosím platné obratové pásmo ve třetím kroku.';
+    return;
+  }
+  const turnoverCoefficient=band ? band.koeficient : 1;
+  const costCenterCoefficient=form.elements.namedItem('Účtujete na střediska / zakázky?').value==='Ano' ? prices.koeficientStrediskaZakazky : 1;
+  const analyticsCoefficient=form.elements.namedItem('Sledujete detailní analytiku?').value==='Ano' ? prices.koeficientDetailniAnalytika : 1;
+  const baseItems=[
+    ['Počet přijatých faktur','Počet přijatých faktur vč. zálohových (za měsíc)'],
+    ['Počet vydaných faktur','Počet vydaných faktur vč. zálohových (za měsíc)'],
+    ['Počet pokladních dokladů','Počet pokladních dokladů (za měsíc)'],
+    ['Počet plateb kartou / ostatní závazky','Počet plateb kartou / ostatní závazky (za měsíc)'],
+    ['Počet položek na bance','Počet položek na bance (za měsíc)',prices.polozkyNaBance]
+  ];
+  const counts=baseItems.map(([,name])=>{
+    if(!has('ucto')) return 0;
+    const raw=form.elements.namedItem(name).value.replace(/\s/g,'');
+    return raw==='' ? 0 : (/^\d+$/.test(raw) && Number.isSafeInteger(Number(raw)) ? Number(raw) : NaN);
+  });
+  const vatSurcharge=has('ucto') && form.elements.namedItem('Plátce DPH').value==='Ano' ? prices.priplatekPlatceDph : 0;
+  const employeeNames=['Počet zaměstnanců HPP','Počet zaměstnanců DPP / DPČ'];
+  const employeeCounts=employeeNames.map(name=>{
+    if(!has('mzdy')) return 0;
+    const raw=form.elements.namedItem(name).value.replace(/\s/g,'');
+    return raw==='' ? 0 : (/^\d+$/.test(raw) && Number.isSafeInteger(Number(raw)) ? Number(raw) : NaN);
+  });
+  const employeeTotal=employeeCounts.reduce((sum,count)=>sum+count,0);
+  if(employeeCounts.some(count=>!Number.isFinite(count)) || !Number.isSafeInteger(employeeTotal)){
+    status.textContent='Zadejte prosím platné nezáporné celé počty zaměstnanců ve čtvrtém kroku.';
+    return;
+  }
+  const payrollTier=prices.mzdovaPasma.find(tier=>employeeTotal<=tier.doPoctu);
+  const individualPayroll=!payrollTier;
+  const payrollRate=payrollTier ? payrollTier.cenaZaZamestnance : 0;
+  const payrollCost=employeeTotal*payrollRate;
+  const documentCount=counts.slice(0,4).reduce((sum,count)=>sum+count,0);
+  const billedDocumentCount=Math.ceil(documentCount/50)*50;
+  if(counts.some(count=>!Number.isSafeInteger(count)) || !Number.isSafeInteger(billedDocumentCount)){
+    status.textContent='Zadejte prosím platné nezáporné celé počty dokladů a plateb ve třetím kroku.';
+    return;
+  }
+  // Nad 1 000 dokladů platí poslední sazba z tabulky.
+  const documentTier=prices.dokladovaPasma.find(tier=>billedDocumentCount<=tier.doPoctu) || prices.dokladovaPasma[prices.dokladovaPasma.length-1];
+  const bankCost=counts[4]*prices.polozkyNaBance;
+  const baseDocumentCost=billedDocumentCount*documentTier.profi+bankCost;
+  const coefficientIncreases=[
+    ['Sklady A',inventoryCoefficient],
+    ['zakázky/střediska',costCenterCoefficient],
+    ['Analytika',analyticsCoefficient],
+    ['Obrat',turnoverCoefficient]
+  ].map(([label,coefficient])=>[label,baseDocumentCost*(coefficient-1),coefficient]);
+  const documentCost=baseDocumentCost+coefficientIncreases.reduce((sum,[,increase])=>sum+increase,0);
+  const dppoCost=baseDocumentCost*prices.dppoNasobek/prices.dppoPocetMesicu;
+  const extras=has('ucto') ? [
+    ['Generální plná moc pro zastupování před FÚ',prices.generalniPlnaMocFu],
+    ['Obsluha datových schránek',prices.obsluhaDatovychSchranek]
+  ].filter(([name])=>form.elements.namedItem(name).value==='Ano') : [];
+  const extrasTotal=extras.reduce((sum,[,price])=>sum+price,0);
+  const accountingCost=documentCost+dppoCost+vatSurcharge+extrasTotal;
+  const accountingVariants={profi:accountingCost};
+  ['zaklad','komplet'].forEach(variant=>{
+    const base=billedDocumentCount*documentTier[variant]+bankCost;
+    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[,,coefficient])=>sum+base*(coefficient-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0);
+  });
+  if(counts.some(count=>!Number.isFinite(count)) || !Number.isFinite(accountingCost+payrollCost) || accountingCost+payrollCost>Number.MAX_SAFE_INTEGER){
+    status.textContent='Zadejte prosím platné nezáporné celé počty dokladů a plateb ve třetím kroku.';
+    return;
+  }
+  const money=new Intl.NumberFormat('cs-CZ',{style:'currency',currency:'CZK',minimumFractionDigits:0,maximumFractionDigits:0});
+  ['Zaklad','Profi','Komplet'].forEach(variant=>{
+    const accounting=accountingVariants[variant.toLowerCase()];
+    document.getElementById('accounting'+variant).textContent=money.format(accounting);
+    document.getElementById('payroll'+variant).textContent=individualPayroll ? 'Individuálně' : money.format(payrollCost);
+    document.getElementById('total'+variant).textContent=individualPayroll ? 'Individuálně' : money.format(accounting+payrollCost);
+  });
+  document.getElementById('packageComparison').classList.remove('hidden');
+  estimate.dataset.valid='true';
+  status.textContent=individualPayroll ? 'Pro tento počet zaměstnanců připravíme individuální nabídku mzdového účetnictví. Celkovou cenu upřesníme osobně.' : '';
+}
+function hideEstimates(event){
+  if(event?.target?.closest('#contactDetails') || event?.target?.name==='Specifika a požadavky na spolupráci') return;
+  document.getElementById('estimate').classList.add('hidden');
+}
+form.addEventListener('input',hideEstimates);
+form.addEventListener('change',hideEstimates);
+
+function validateContactEmail(){
+  const email=form.elements.namedItem('E-mail');
+  const message=!email.value.trim()
+    ? 'Vyplňte prosím e-mail. Je povinný pro odeslání poptávky.'
+    : !email.validity.valid ? 'Zadejte prosím platný e-mail, například jmeno@firma.cz.' : '';
+  document.getElementById('contactEmailError').textContent=message;
+  if(message) email.setAttribute('aria-invalid','true');
+  else email.removeAttribute('aria-invalid');
+  return !message;
+}
+function focusContactEmail(){
+  if(step!==6){step=6;render();}
+  const email=form.elements.namedItem('E-mail');
+  email.scrollIntoView({block:'center',behavior:'instant'});
+  email.focus({preventScroll:true});
+}
+document.getElementById('contactEmail').addEventListener('input',event=>{
+  if(event.target.getAttribute('aria-invalid')==='true') validateContactEmail();
+});
+document.getElementById('contactEmail').addEventListener('invalid',event=>{
+  event.preventDefault();
+  validateContactEmail();
+  focusContactEmail();
+});
+
+function submitDemo(){
+  if(!validateContactEmail()){
+    focusContactEmail();
+    return;
+  }
+  // Stejnou kontrolu je nutné provést i na budoucím serverovém endpointu.
+  if(form.elements.namedItem('website').value!==''){
+    document.getElementById('result').textContent='Poptávku se nepodařilo odeslat. Obnovte prosím stránku a zkuste to znovu.';
+    return;
+  }
+  // Přepočet zajistí, že e-mail obsahuje ceny podle aktuálních odpovědí.
+  calculateEstimate();
+  if((has('ucto') || has('mzdy')) && document.getElementById('estimate').dataset.valid!=='true'){
+    document.getElementById('result').textContent='Před odesláním opravte prosím údaje pro výpočet ceny. Podrobnosti najdete u cenové tabulky.';
+    return;
+  }
+  // mailto podporuje textové tělo; tabulky převedeme na textové řádky.
+  const fd=new FormData(form);let lines=[];
+  for(const [k,v] of fd.entries()) if(k!=='website' && v) lines.push(k+': '+v);
+  ['estimate'].forEach(id=>{
+    const section=document.getElementById(id);
+    if(section.classList.contains('hidden')) return;
+    lines.push('');
+    [...section.children].forEach(element=>{
+      if(element.classList.contains('hidden')) return;
+      const table=element.querySelector('table');
+      if(table){
+        [...table.rows].forEach(row=>{
+          lines.push([...row.cells].map(cell=>cell.textContent.trim()).join(' | '));
+        });
+      }else if(element.textContent.trim()){
+        lines.push(element.textContent.trim());
+      }
+    });
+  });
+  const subject=encodeURIComponent('Poptávka služeb MxB účto');
+  const body=encodeURIComponent(lines.join('\n'));
+  window.location.href='mailto:info@mxb.cz?subject='+subject+'&body='+body;
+  document.getElementById('result').textContent='Otevírám e-mail s vyplněnou poptávkou.';
+}
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  submitDemo();
+});
+render();
+alignGridLabels();
+</script>
+</body>
+</html>
