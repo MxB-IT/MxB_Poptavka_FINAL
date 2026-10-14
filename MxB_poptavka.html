@@ -42,8 +42,7 @@ button{border:0;border-radius:9px;padding:12px 20px;font-family:inherit;font-wei
 .hourly-disclosure>summary{cursor:pointer;padding:14px 12px;background:#f5f1f1;color:var(--accent);font-weight:700;border-radius:9px}.hourly-disclosure[open]>summary{margin-bottom:12px}.hourly-disclosure>summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.vat-package-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.vat-package-grid .vat-package-card{width:100%;max-width:none;margin:0;padding:22px 12px;font-size:14px;min-height:0}.vat-package-grid .vat-package-price{font-size:18px}.vat-package{margin-top:28px}@media(max-width:800px){.vat-package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.vat-package-grid{grid-template-columns:1fr}}
 #contactDetails>.grid{margin-left:10px;margin-right:10px}
 input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.help-tooltip::before{content:'';position:absolute;left:0;right:0;top:-8px;height:8px}.help-tooltip a{color:var(--accent);text-decoration:underline}.reporting-help{display:inline-block;position:relative;margin-bottom:7px}.reporting-help summary{display:inline-flex;list-style:none}.reporting-help summary::-webkit-details-marker{display:none}.reporting-help[open] .help-tooltip{display:block;left:0;right:auto}
-.reporting-label{display:flex;align-items:flex-start;gap:5px;margin-bottom:7px}.reporting-label>label{margin-bottom:0}.reporting-label>.reporting-help{margin-bottom:0;flex:0 0 auto}
+.help-tooltip::before{content:'';position:absolute;left:0;right:0;top:-8px;height:8px}.help-tooltip a{color:var(--accent);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -162,7 +161,7 @@ input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="
         <div class="grid">
           <div class="field"><label for="powerOfAttorney">Generální plná moc pro zastupování před FÚ</label><select id="powerOfAttorney" name="Generální plná moc pro zastupování před FÚ"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
           <div class="field"><label for="dataMailbox">Obsluha datových schránek</label><select id="dataMailbox" name="Obsluha datových schránek"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
-          <div class="field"><div class="reporting-label"><label for="reporting">Reporting</label><details class="reporting-help"><summary class="help-mark" aria-label="Více informací o reportingu">?</summary><div class="help-tooltip">Více informací najdete v článku <a href="https://www.mxb.cz/poradenska-skupina-mxb/blog/reporting-mejte-rizeni-firmy-pod-kontrolou-p188/" target="_blank" rel="noopener noreferrer">Reporting: mějte řízení firmy pod kontrolou</a> (otevře se v nové kartě).</div></details></div><select id="reporting" name="Zpracování reportů"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
+          <div class="field"><label for="reporting">Reporting <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Více informací o reportingu" aria-describedby="reportingHelp">?</span><span id="reportingHelp" class="help-tooltip" role="tooltip">Více informací najdete v článku <a href="https://www.mxb.cz/poradenska-skupina-mxb/blog/reporting-mejte-rizeni-firmy-pod-kontrolou-p188/" target="_blank" rel="noopener noreferrer">Reporting: mějte řízení firmy pod kontrolou</a> (otevře se v nové kartě).</span></span></label><select id="reporting" name="Zpracování reportů"><option value="">Vyberte</option><option>Ano</option><option>Ne</option></select></div>
         </div>
       </div>
       <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="next" onclick="clearCurrentStep()">Vymazat</button><button type="button" class="next" onclick="next()">Pokračovat</button></div>
@@ -187,7 +186,7 @@ input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="
                 <table class="estimate-table comparison-table">
 
                     <colgroup><col class="comparison-service"><col><col><col></colgroup>
-                    <thead><tr><th scope="col">Služba</th><th scope="col">ZÁKLADNÍ</th><th scope="col">POKROČILÝ</th><th scope="col">KOMPLETNÍ</th></tr></thead>
+                    <thead><tr><th scope="col">Služba</th><th scope="col">ZÁKLADNÍ</th><th scope="col">POKROČILÝ</th><th scope="col">KOMPLEXNÍ</th></tr></thead>
                     <tbody>
                         <tr><th scope="row">Zpracování účetnictví</th><td id="accountingZaklad"></td><td id="accountingProfi"></td><td id="accountingKomplet"></td></tr>
                         <tr><th scope="row">Zpracování mzdového účetnictví</th><td id="payrollZaklad"></td><td id="payrollProfi"></td><td id="payrollKomplet"></td></tr>
@@ -236,13 +235,14 @@ input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="
             <textarea name="Specifika a požadavky na spolupráci"></textarea>
         </div>
 
-        <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="submit" onclick="submitDemo()">Odeslat poptávku</button></div>
-        <p id="result" class="hint"></p>
+        <div class="nav"><button type="button" class="back" onclick="back()">Zpět</button><button type="button" class="submit" onclick="submitInquiry()">Odeslat poptávku</button></div>
+        <p id="result" class="hint" role="status" aria-live="polite"></p>
     </section>
   </form>
 </div>
 
-<script src="cenik.js"></script>
+<script src="cenik.js">
+</script>
 <script>
 let step=2;
 const form=document.getElementById('form');
@@ -695,7 +695,7 @@ function buildEmailPrices(){
   const estimate=document.getElementById('estimate');
   if(estimate.classList.contains('hidden') || estimate.dataset.valid!=='true') return [];
   const lines=['','VYPOČTENÁ MĚSÍČNÍ CENA','Částky jsou v Kč bez DPH.'];
-  [['Zaklad','ZÁKLADNÍ'],['Profi','POKROČILÝ'],['Komplet','KOMPLETNÍ']].forEach(([key,label])=>{
+  [['Zaklad','ZÁKLADNÍ'],['Profi','POKROČILÝ'],['Komplet','KOMPLEXNÍ']].forEach(([key,label])=>{
     lines.push('',label,
       '  Účetnictví: '+document.getElementById('accounting'+key).textContent.trim(),
       '  Mzdy: '+document.getElementById('payroll'+key).textContent.trim(),
@@ -707,7 +707,8 @@ function buildEmailPrices(){
   return lines;
 }
 
-function submitDemo(){
+async function submitInquiry(){
+  if(inquirySending) return;
   updatePayrollRequirements();
   const payrollInvalid=activeSteps().includes(4) && [...document.querySelectorAll('.step[data-step="4"] input')].find(field=>!field.checkValidity());
   if(payrollInvalid){step=4;render();payrollInvalid.reportValidity();return;}
@@ -730,21 +731,90 @@ function submitDemo(){
     document.getElementById('result').textContent='Před odesláním opravte prosím údaje pro výpočet ceny. Podrobnosti najdete u cenové tabulky.';
     return;
   }
-  // mailto podporuje prostý text; do cenového souhrnu patří jen vypočtené částky.
-  const fd=new FormData(form);let lines=[];
-  for(const [k,v] of fd.entries()) if(k!=='website' && v) lines.push(k+': '+v);
+  const fd=new FormData(form);
+  const fields=[];
+  const lines=[];
+  for(const [name,value] of fd.entries()){
+    if(name==='website' || !value) continue;
+    fields.push({name,value:String(value)});
+    lines.push(name+': '+value);
+  }
   lines.push(...buildEmailPrices());
-  const subject=encodeURIComponent('Poptávka služeb MxB účto');
-  const body=encodeURIComponent(lines.join('\n'));
-  window.location.href='mailto:info@mxb.cz?subject='+subject+'&body='+body;
-  document.getElementById('result').textContent='Otevírám e-mail s vyplněnou poptávkou.';
+  const result=document.getElementById('result');
+  if(!INQUIRY_EMAIL_CONFIG.endpoint.trim()){
+    result.textContent='Odesílání poptávek zatím není dostupné. Zkuste to prosím později.';
+    return;
+  }
+  const button=form.querySelector('button.submit');
+  const originalText=button.textContent;
+  inquirySending=true;
+  button.disabled=true;
+  button.textContent='Odesílám…';
+  result.textContent='Probíhá odesílání poptávky…';
+  try{
+    await sendInquiryEmail({
+      subject:INQUIRY_EMAIL_CONFIG.subject,
+      replyTo:form.elements.namedItem('E-mail').value.trim(),
+      fields,
+      body:lines.join('\n'),
+      website:fd.get('website') || ''
+    });
+    result.textContent='Děkujeme, vaše poptávka byla úspěšně odeslána.';
+  }catch(error){
+    result.textContent='Odeslání se nepodařilo potvrdit. Zkuste to prosím později.';
+  }finally{
+    inquirySending=false;
+    button.disabled=false;
+    button.textContent=originalText;
+  }
 }
 form.addEventListener('submit',event=>{
   event.preventDefault();
-  submitDemo();
+  submitInquiry();
 });
 render();
 alignGridLabels();
+
+// ============================================================================
+// NASTAVENÍ ODESÍLÁNÍ POPTÁVEK – PRO WEBAŘE
+// ============================================================================
+// 1. Doplňte URL serverového endpointu níže, např. '/api/poptavka'.
+// 2. Na SERVERU nastavte mailový profil (SMTP / mailová služba), odesílatele
+//    a příjemce poptávek (např. info@mxb.cz). 
+// 3. Endpoint přijímá POST s JSON: {subject, replyTo, fields, body, website}.
+//    fields je seznam {name, value}; body obsahuje všechny vyplněné údaje
+//    a případný cenový souhrn v prostém textu. replyTo je e-mail zájemce.
+// 4. Server musí ověřit údaje, honeypot website, omezit spam a zabránit
+//    vložení hlaviček e-mailu. Příjemce a odesílatele určuje serverový profil.
+// 5. Teprve po úspěšném předání mailové službě vraťte HTTP 2xx a JSON
+//    {"success":true}. Při chybě vraťte odpovídající HTTP chybu.
+//    Pro jiný formát API upravte pouze funkci sendInquiryEmail níže.
+//    Endpoint na jiné doméně vyžaduje odpovídající nastavení CORS.
+const INQUIRY_EMAIL_CONFIG={
+  endpoint:'', // WEBAŘI DOPLNÍ URL ENDPOINTU PRO ODESÍLÁNÍ
+  subject:'Poptávka služeb MxB účto',
+  timeoutMs:30000
+};
+let inquirySending=false;
+
+async function sendInquiryEmail(payload){
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),INQUIRY_EMAIL_CONFIG.timeoutMs);
+  try{
+    const response=await fetch(INQUIRY_EMAIL_CONFIG.endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify(payload),
+      signal:controller.signal
+    });
+    if(!response.ok) throw new Error('Odesílací endpoint vrátil chybu.');
+    const confirmation=await response.json();
+    if(confirmation.success!==true) throw new Error('Server nepotvrdil odeslání.');
+  }finally{
+    clearTimeout(timeout);
+  }
+}
 </script>
 </body>
 </html>
