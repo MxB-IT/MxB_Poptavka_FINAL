@@ -26,6 +26,10 @@ window.MXB_CENIK = {
     { doPoctu: 1000, zaklad: 16, profi: 25, komplet: 34 }
   ],
   polozkyNaBance: 10,
+  // E-shop: samostatná měsíční cena importu = počet × podíl × sazba + paušál.
+  automatickyImportovaneFakturyPodil: 0.03,
+  automatickyImportovaneFakturySazba: 45,
+  automatickyImportovaneFakturyPausal: 450,
   // Měsíční složka DPPO = (součet základních cen pěti účetních položek × násobek) / počet měsíců.
   // Přírůstky koeficientů se do základu DPPO nezahrnují.
   dppoPocetMesicu: 12,

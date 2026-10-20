@@ -93,10 +93,11 @@ input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="
         <div class="section">
           
           <div class="grid">
-            <div class="field"><label for="businessActivity">Hlavní předmět podnikatelské činnosti</label><select id="businessActivity" name="Hlavní předmět podnikatelské činnosti"><option value="">Vyberte</option><option value="zbozi">Nákup a prodej zboží</option><option value="sluzby">Poskytování služeb</option></select></div>
+            <div class="field"><label for="businessActivity">Hlavní předmět podnikatelské činnosti</label><select id="businessActivity" name="Hlavní předmět podnikatelské činnosti"><option value="">Vyberte</option><option value="zbozi">Nákup a prodej zboží</option><option value="eshop">E-shop</option><option value="sluzby">Poskytování služeb</option></select></div>
             <div class="field"><label for="turnoverBand">Obrat za poslední zdaňovací období</label><select id="turnoverBand" name="Obrat za poslední zdaňovací období"><option value="">Vyberte</option></select></div>
             <div class="field"><label>Počet přijatých faktur vč. zálohových (za měsíc)</label><input name="Počet přijatých faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
-            <div class="field"><label>Počet vydaných faktur vč. zálohových (za měsíc)</label><input name="Počet vydaných faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
+            <div class="field"><label for="issuedInvoices">Počet vydaných faktur vč. zálohových (za měsíc) <span id="issuedInvoicesHelpWrap" class="field-help hidden"><span class="help-mark" tabindex="0" aria-label="Vysvětlení počtu vydaných faktur" aria-describedby="issuedInvoicesHelp">?</span><span id="issuedInvoicesHelp" class="help-tooltip" role="tooltip">Netýká se automaticky importovaných faktur</span></span></label><input id="issuedInvoices" name="Počet vydaných faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
+            <div id="importedInvoicesField" class="field hidden"><label for="importedInvoices">Automaticky importované faktury <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Vysvětlení automaticky importovaných faktur" aria-describedby="importedInvoicesHelp">?</span><span id="importedInvoicesHelp" class="help-tooltip" role="tooltip">Faktury přenášené z e-shopu přímo do účetního systému prostřednictvím specializovaného programu, nikoliv ve formátu ISDOC či jiných strukturovaných formátech jednotlivých faktur.</span></span></label><input id="importedInvoices" name="Automaticky importované faktury" inputmode="numeric" aria-describedby="importedInvoicesHelp" disabled></div>
             <div class="field"><label>Počet pokladních dokladů (za měsíc)</label><input name="Počet pokladních dokladů (za měsíc)" inputmode="numeric"></div>
             <div class="field"><label for="cardPayments">Počet plateb kartou / ostatní závazky (za měsíc) <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Příklady ostatních závazků" aria-describedby="cardPaymentsHelp">?</span><span id="cardPaymentsHelp" class="help-tooltip" role="tooltip">Např. splátkové a platební kalendáře, leasingy, nájemné apod.</span></span></label><input id="cardPayments" name="Počet plateb kartou / ostatní závazky (za měsíc)" inputmode="numeric" aria-describedby="cardPaymentsHelp"></div>
             <div class="field"><label for="bankItems">Počet položek na bance (za měsíc) <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Vysvětlení počtu položek na bance" aria-describedby="bankItemsHelp">?</span><span id="bankItemsHelp" class="help-tooltip" role="tooltip">Počet všech položek (příjmy i výdaje) na všech bankovních účtech.</span></span></label><input id="bankItems" name="Počet položek na bance (za měsíc)" type="number" min="0" step="1" inputmode="numeric"></div>
@@ -270,7 +271,7 @@ document.querySelectorAll('.step[data-step="4"] input').forEach(field=>field.add
 function updateAccountingRequirements(){
   const optional=new Set(['Hlavní předmět podnikatelské činnosti','Obrat za poslední zdaňovací období','Používaný účetní SW','Skladová evidence / účtování zásob','Účtujete na střediska / zakázky?','Sledujete detailní analytiku?']);
   document.querySelectorAll('.step[data-step="3"] input, .step[data-step="3"] select, .step[data-step="4"] input, .step[data-step="4"] select').forEach(field=>{
-    field.required=!optional.has(field.name);
+    field.required=!field.disabled && !optional.has(field.name);
   });
   updatePayrollRequirements();
 }
@@ -294,13 +295,19 @@ function selected(){
   return [...document.querySelectorAll('[data-service]:checked')].map(x=>x.dataset.service);
 }
 function has(s){return selected().includes(s)}
+function isEshop(){
+  return document.getElementById('businessActivity').value==='eshop';
+}
+function activityCategory(){
+  return isEshop() ? 'zbozi' : (document.getElementById('businessActivity').value || 'nezvoleno');
+}
 function turnoverBands(){
-  const category=document.getElementById('businessActivity').value || 'nezvoleno';
+  const category=activityCategory();
   return window.MXB_CENIK?.obratovaPasma?.[category];
 }
 function updateTurnoverOptions(){
   const select=document.getElementById('turnoverBand');
-  const category=document.getElementById('businessActivity').value || 'nezvoleno';
+  const category=activityCategory();
   if(select.dataset.category===category) return;
   select.replaceChildren(new Option('Vyberte',''));
   const bands=turnoverBands();
@@ -311,6 +318,14 @@ function updateTurnoverOptions(){
 }
 document.getElementById('businessActivity').addEventListener('change',updateDynamic);
 function updateDynamic(){
+  const eshop=isEshop();
+  const importedInvoices=document.getElementById('importedInvoices');
+  importedInvoices.disabled=!eshop;
+  document.getElementById('importedInvoicesField').classList.toggle('hidden',!eshop);
+  document.getElementById('issuedInvoicesHelpWrap').classList.toggle('hidden',!eshop);
+  const issuedInvoices=document.getElementById('issuedInvoices');
+  if(eshop) issuedInvoices.setAttribute('aria-describedby','issuedInvoicesHelp');
+  else issuedInvoices.removeAttribute('aria-describedby');
   document.querySelectorAll('.step[data-step="5"] select').forEach(field=>{
     field.disabled=!(has('ucto') || has('mzdy'));
   });
@@ -559,7 +574,7 @@ function calculateEstimate(){
   estimate.classList.remove('hidden');
   estimate.dataset.valid='false';
   status.textContent='';
-  const priceKeys=['polozkyNaBance','priplatekPlatceDph','koeficientSkladovaEvidence','koeficientStrediskaZakazky','koeficientDetailniAnalytika','generalniPlnaMocFu','obsluhaDatovychSchranek'];
+  const priceKeys=['automatickyImportovaneFakturyPodil','automatickyImportovaneFakturySazba','automatickyImportovaneFakturyPausal','polozkyNaBance','priplatekPlatceDph','koeficientSkladovaEvidence','koeficientStrediskaZakazky','koeficientDetailniAnalytika','generalniPlnaMocFu','obsluhaDatovychSchranek'];
   if(!prices || priceKeys.some(key=>typeof prices[key]!=='number' || !Number.isFinite(prices[key]) || prices[key]<0) || !Array.isArray(prices.mzdovaPasma) || !prices.mzdovaPasma.length || prices.mzdovaPasma.some((tier,index)=>!tier || !Number.isSafeInteger(tier.doPoctu) || tier.doPoctu<1 || (index>0 && tier.doPoctu<=prices.mzdovaPasma[index-1].doPoctu) || typeof tier.cenaZaZamestnance!=='number' || !Number.isFinite(tier.cenaZaZamestnance) || tier.cenaZaZamestnance<0)){
     status.textContent='Ceník se nepodařilo načíst nebo obsahuje neplatné sazby. Zkontrolujte soubor cenik.js.';
     return;
@@ -599,6 +614,15 @@ function calculateEstimate(){
     const raw=form.elements.namedItem(name).value.replace(/\s/g,'');
     return raw==='' ? 0 : (/^\d+$/.test(raw) && Number.isSafeInteger(Number(raw)) ? Number(raw) : NaN);
   });
+  const importActive=has('ucto') && isEshop();
+  const importField=document.getElementById('importedInvoices');
+  const importRaw=importActive ? importField.value : '';
+  const importCount=importRaw==='' ? 0 : (/^\d+$/.test(importRaw) && Number.isSafeInteger(Number(importRaw)) ? Number(importRaw) : NaN);
+  if(!Number.isSafeInteger(importCount) || (importActive && !importField.checkValidity())){
+    status.textContent='Zadejte prosím platný nezáporný celý počet automaticky importovaných faktur.';
+    return;
+  }
+  const importCost=importActive ? importCount*prices.automatickyImportovaneFakturyPodil*prices.automatickyImportovaneFakturySazba+prices.automatickyImportovaneFakturyPausal : 0;
   const vatSurcharge=has('ucto') && form.elements.namedItem('Plátce DPH').value==='Ano' ? prices.priplatekPlatceDph : 0;
   const employeeNames=['Počet zaměstnanců HPP','Počet zaměstnanců DPP / DPČ'];
   const employeeCounts=employeeNames.map(name=>{
@@ -638,11 +662,11 @@ function calculateEstimate(){
     ['Obsluha datových schránek',prices.obsluhaDatovychSchranek]
   ].filter(([name])=>form.elements.namedItem(name).value==='Ano') : [];
   const extrasTotal=extras.reduce((sum,[,price])=>sum+price,0);
-  const accountingCost=documentCost+dppoCost+vatSurcharge+extrasTotal;
+  const accountingCost=documentCost+dppoCost+vatSurcharge+extrasTotal+importCost;
   const accountingVariants={profi:accountingCost};
   ['zaklad','komplet'].forEach(variant=>{
     const base=billedDocumentCount*documentTier[variant]+bankCost;
-    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[,,coefficient])=>sum+base*(coefficient-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0);
+    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[,,coefficient])=>sum+base*(coefficient-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0)+importCost;
   });
   if(counts.some(count=>!Number.isFinite(count)) || !Number.isFinite(accountingCost+payrollCost) || accountingCost+payrollCost>Number.MAX_SAFE_INTEGER){
     status.textContent='Zadejte prosím platné nezáporné celé počty dokladů a plateb ve třetím kroku.';
@@ -658,6 +682,7 @@ function calculateEstimate(){
   document.getElementById('packageComparison').classList.remove('hidden');
   estimate.dataset.valid='true';
   status.textContent=individualPayroll ? 'Pro tento počet zaměstnanců připravíme individuální nabídku mzdového účetnictví. Celkovou cenu upřesníme osobně.' : '';
+
 }
 function hideEstimates(event){
   if(event?.target?.closest('#contactDetails') || event?.target?.name==='Specifika a požadavky na spolupráci') return;
