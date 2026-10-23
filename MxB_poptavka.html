@@ -649,12 +649,14 @@ function calculateEstimate(){
   const documentTier=prices.dokladovaPasma.find(tier=>billedDocumentCount<=tier.doPoctu) || prices.dokladovaPasma[prices.dokladovaPasma.length-1];
   const bankCost=counts[4]*prices.polozkyNaBance;
   const baseDocumentCost=billedDocumentCount*documentTier.profi+bankCost;
+  // Střediska / zakázky se připlácejí pouze v Základním tarifu.
+  const tariffCoefficient=(label,coefficient,variant)=>label==='zakázky/střediska' && variant!=='zaklad' ? 1 : coefficient;
   const coefficientIncreases=[
     ['Sklady A',inventoryCoefficient],
     ['zakázky/střediska',costCenterCoefficient],
     ['Analytika',analyticsCoefficient],
     ['Obrat',turnoverCoefficient]
-  ].map(([label,coefficient])=>[label,baseDocumentCost*(coefficient-1),coefficient]);
+  ].map(([label,coefficient])=>[label,baseDocumentCost*(tariffCoefficient(label,coefficient,'profi')-1),coefficient]);
   const documentCost=baseDocumentCost+coefficientIncreases.reduce((sum,[,increase])=>sum+increase,0);
   const dppoCost=baseDocumentCost*prices.dppoNasobek/prices.dppoPocetMesicu;
   const extras=has('ucto') ? [
@@ -666,7 +668,7 @@ function calculateEstimate(){
   const accountingVariants={profi:accountingCost};
   ['zaklad','komplet'].forEach(variant=>{
     const base=billedDocumentCount*documentTier[variant]+bankCost;
-    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[,,coefficient])=>sum+base*(coefficient-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0)+importCost(variant);
+    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[label,,coefficient])=>sum+base*(tariffCoefficient(label,coefficient,variant)-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0)+importCost(variant);
   });
   if(counts.some(count=>!Number.isFinite(count)) || Object.values(accountingVariants).some(cost=>!Number.isFinite(cost+payrollCost) || cost+payrollCost>Number.MAX_SAFE_INTEGER)){
     status.textContent='Zadejte prosím platné nezáporné celé počty dokladů a plateb ve třetím kroku.';
