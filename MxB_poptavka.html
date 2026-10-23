@@ -574,7 +574,7 @@ function calculateEstimate(){
   estimate.classList.remove('hidden');
   estimate.dataset.valid='false';
   status.textContent='';
-  const priceKeys=['automatickyImportovaneFakturyPodil','automatickyImportovaneFakturySazba','automatickyImportovaneFakturyPausal','polozkyNaBance','priplatekPlatceDph','koeficientSkladovaEvidence','koeficientStrediskaZakazky','koeficientDetailniAnalytika','generalniPlnaMocFu','obsluhaDatovychSchranek'];
+  const priceKeys=['automatickyImportovaneFakturyPodil','automatickyImportovaneFakturySazbaZaklad','automatickyImportovaneFakturySazbaProfi','automatickyImportovaneFakturySazbaKomplet','automatickyImportovaneFakturyPausal','polozkyNaBance','priplatekPlatceDph','koeficientSkladovaEvidence','koeficientStrediskaZakazky','koeficientDetailniAnalytika','generalniPlnaMocFu','obsluhaDatovychSchranek'];
   if(!prices || priceKeys.some(key=>typeof prices[key]!=='number' || !Number.isFinite(prices[key]) || prices[key]<0) || !Array.isArray(prices.mzdovaPasma) || !prices.mzdovaPasma.length || prices.mzdovaPasma.some((tier,index)=>!tier || !Number.isSafeInteger(tier.doPoctu) || tier.doPoctu<1 || (index>0 && tier.doPoctu<=prices.mzdovaPasma[index-1].doPoctu) || typeof tier.cenaZaZamestnance!=='number' || !Number.isFinite(tier.cenaZaZamestnance) || tier.cenaZaZamestnance<0)){
     status.textContent='Ceník se nepodařilo načíst nebo obsahuje neplatné sazby. Zkontrolujte soubor cenik.js.';
     return;
@@ -622,7 +622,7 @@ function calculateEstimate(){
     status.textContent='Zadejte prosím platný nezáporný celý počet automaticky importovaných faktur.';
     return;
   }
-  const importCost=importActive ? importCount*prices.automatickyImportovaneFakturyPodil*prices.automatickyImportovaneFakturySazba+prices.automatickyImportovaneFakturyPausal : 0;
+  const importCost=variant=>importActive ? importCount*prices.automatickyImportovaneFakturyPodil*prices['automatickyImportovaneFakturySazba'+variant[0].toUpperCase()+variant.slice(1)]+prices.automatickyImportovaneFakturyPausal : 0;
   const vatSurcharge=has('ucto') && form.elements.namedItem('Plátce DPH').value==='Ano' ? prices.priplatekPlatceDph : 0;
   const employeeNames=['Počet zaměstnanců HPP','Počet zaměstnanců DPP / DPČ'];
   const employeeCounts=employeeNames.map(name=>{
@@ -662,13 +662,13 @@ function calculateEstimate(){
     ['Obsluha datových schránek',prices.obsluhaDatovychSchranek]
   ].filter(([name])=>form.elements.namedItem(name).value==='Ano') : [];
   const extrasTotal=extras.reduce((sum,[,price])=>sum+price,0);
-  const accountingCost=documentCost+dppoCost+vatSurcharge+extrasTotal+importCost;
+  const accountingCost=documentCost+dppoCost+vatSurcharge+extrasTotal+importCost('profi');
   const accountingVariants={profi:accountingCost};
   ['zaklad','komplet'].forEach(variant=>{
     const base=billedDocumentCount*documentTier[variant]+bankCost;
-    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[,,coefficient])=>sum+base*(coefficient-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0)+importCost;
+    accountingVariants[variant]=base+coefficientIncreases.reduce((sum,[,,coefficient])=>sum+base*(coefficient-1),0)+base*prices.dppoNasobek/prices.dppoPocetMesicu+vatSurcharge+(variant==='zaklad' ? extrasTotal : 0)+importCost(variant);
   });
-  if(counts.some(count=>!Number.isFinite(count)) || !Number.isFinite(accountingCost+payrollCost) || accountingCost+payrollCost>Number.MAX_SAFE_INTEGER){
+  if(counts.some(count=>!Number.isFinite(count)) || Object.values(accountingVariants).some(cost=>!Number.isFinite(cost+payrollCost) || cost+payrollCost>Number.MAX_SAFE_INTEGER)){
     status.textContent='Zadejte prosím platné nezáporné celé počty dokladů a plateb ve třetím kroku.';
     return;
   }
