@@ -96,7 +96,7 @@ input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="
             <div class="field"><label for="businessActivity">Hlavní předmět podnikatelské činnosti</label><select id="businessActivity" name="Hlavní předmět podnikatelské činnosti"><option value="">Vyberte</option><option value="zbozi">Nákup a prodej zboží</option><option value="eshop">E-shop</option><option value="sluzby">Poskytování služeb</option></select></div>
             <div class="field"><label for="turnoverBand">Obrat za poslední zdaňovací období</label><select id="turnoverBand" name="Obrat za poslední zdaňovací období"><option value="">Vyberte</option></select></div>
             <div class="field"><label>Počet přijatých faktur vč. zálohových (za měsíc)</label><input name="Počet přijatých faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
-            <div class="field"><label for="issuedInvoices">Počet vydaných faktur vč. zálohových (za měsíc) <span id="issuedInvoicesHelpWrap" class="field-help hidden"><span class="help-mark" tabindex="0" aria-label="Vysvětlení počtu vydaných faktur" aria-describedby="issuedInvoicesHelp">?</span><span id="issuedInvoicesHelp" class="help-tooltip" role="tooltip">Netýká se automaticky importovaných faktur</span></span></label><input id="issuedInvoices" name="Počet vydaných faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
+            <div class="field"><label for="issuedInvoices">Počet vydaných faktur vč. zálohových (za měsíc) <span id="issuedInvoicesHelpWrap" class="field-help hidden"><span class="help-mark" tabindex="0" aria-label="Vysvětlení počtu vydaných faktur" aria-describedby="issuedInvoicesHelp">?</span><span id="issuedInvoicesHelp" class="help-tooltip" role="tooltip">Netýká se automaticky importovaných faktur.</span></span></label><input id="issuedInvoices" name="Počet vydaných faktur vč. zálohových (za měsíc)" inputmode="numeric"></div>
             <div id="importedInvoicesField" class="field hidden"><label for="importedInvoices">Automaticky importované faktury <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Vysvětlení automaticky importovaných faktur" aria-describedby="importedInvoicesHelp">?</span><span id="importedInvoicesHelp" class="help-tooltip" role="tooltip">Faktury přenášené z e-shopu přímo do účetního systému prostřednictvím specializovaného programu, nikoliv ve formátu ISDOC či jiných strukturovaných formátech jednotlivých faktur.</span></span></label><input id="importedInvoices" name="Automaticky importované faktury" inputmode="numeric" aria-describedby="importedInvoicesHelp" disabled></div>
             <div class="field"><label>Počet pokladních dokladů (za měsíc)</label><input name="Počet pokladních dokladů (za měsíc)" inputmode="numeric"></div>
             <div class="field"><label for="cardPayments">Počet plateb kartou / ostatní závazky (za měsíc) <span class="field-help"><span class="help-mark" tabindex="0" aria-label="Příklady ostatních závazků" aria-describedby="cardPaymentsHelp">?</span><span id="cardPaymentsHelp" class="help-tooltip" role="tooltip">Např. splátkové a platební kalendáře, leasingy, nájemné apod.</span></span></label><input id="cardPayments" name="Počet plateb kartou / ostatní závazky (za měsíc)" inputmode="numeric" aria-describedby="cardPaymentsHelp"></div>
@@ -221,7 +221,7 @@ input[type="number"]{-moz-appearance:textfield;appearance:textfield}input[type="
                 </table>
             </div>
 
-            <p class="hint">*Jedná se o nezávaznou kalkulaci na základě Vámi zadaných hodnot. Uvedené částky jsou bez DPH.</p>
+            <p class="hint">* Jedná se o nezávaznou kalkulaci na základě Vámi zadaných hodnot. Uvedené částky jsou bez DPH.</p>
             <p id="estimateStatus" class="hint" role="status"></p>
             <div id="estimateNotices"></div>
         </div>
@@ -540,7 +540,7 @@ function buildHourlyRates(){
   disclosure.appendChild(wrap);
   const note=document.createElement('p');
   note.className='hint';
-  note.textContent='*Uvedené sazby jsou bez DPH.';
+  note.textContent='* Uvedené sazby jsou bez DPH.';
   disclosure.appendChild(note);
   container.appendChild(disclosure);
 }
