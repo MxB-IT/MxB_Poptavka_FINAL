@@ -618,11 +618,12 @@ function calculateEstimate(){
   const importField=document.getElementById('importedInvoices');
   const importRaw=importActive ? importField.value : '';
   const importCount=importRaw==='' ? 0 : (/^\d+$/.test(importRaw) && Number.isSafeInteger(Number(importRaw)) ? Number(importRaw) : NaN);
-  if(!Number.isSafeInteger(importCount) || (importActive && !importField.checkValidity())){
+  const billedImportCount=Math.ceil(importCount/500)*500;
+  if(!Number.isSafeInteger(importCount) || !Number.isSafeInteger(billedImportCount) || (importActive && !importField.checkValidity())){
     status.textContent='Zadejte prosím platný nezáporný celý počet automaticky importovaných faktur.';
     return;
   }
-  const importCost=variant=>importActive ? importCount*prices.automatickyImportovaneFakturyPodil*prices['automatickyImportovaneFakturySazba'+variant[0].toUpperCase()+variant.slice(1)]+prices.automatickyImportovaneFakturyPausal : 0;
+  const importCost=variant=>importActive ? billedImportCount*prices.automatickyImportovaneFakturyPodil*prices['automatickyImportovaneFakturySazba'+variant[0].toUpperCase()+variant.slice(1)]+prices.automatickyImportovaneFakturyPausal : 0;
   const vatSurcharge=has('ucto') && form.elements.namedItem('Plátce DPH').value==='Ano' ? prices.priplatekPlatceDph : 0;
   const employeeNames=['Počet zaměstnanců HPP','Počet zaměstnanců DPP / DPČ'];
   const employeeCounts=employeeNames.map(name=>{
